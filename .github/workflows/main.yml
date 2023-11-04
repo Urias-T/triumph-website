@@ -4,18 +4,25 @@ on:
   push:
     branches:
       - main
-
 jobs:
   deploy:
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-
-      - name: Upload to Google Cloud Storage
-        uses: GoogleCloudPlatform/github-actions/upload-to-gcs@v0.2
+      runs-on: ubuntu-latest
+      permissions:
+        contents: 'read'
+        id-token: 'write'
+  
+      steps:
+      - id: 'checkout'
+        uses: 'actions/checkout@v3'
+  
+      - id: 'auth'
+        uses: 'google-github-actions/auth@v1'
         with:
-          service_account_key: ${{ secrets.GCP_SA_KEY }}
-          bucket: ${{ secrets.GCP_BUCKET }}
-          source: .
+          service_account: ${{ secrets.GCP_SA }}
+  
+      - id: 'upload-file'
+        uses: 'google-github-actions/upload-cloud-storage@v1'
+        with:
+          path: .
+          destination: ${{ secrets.GCP_BUCKET }}
+  
