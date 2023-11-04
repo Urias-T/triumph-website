@@ -1,0 +1,24 @@
+name: Deploy to Google Cloud Storage
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Set up Google Secret Manager
+      run: |
+        gcloud auth activate-service-account --key-file=<(gcloud secrets versions access latest --secret=github-actions-secret)
+      env:
+        GCP_PROJECT: ${{ secrets.GCP_PROJECT }}
+
+    - name: Deploy to Google Cloud Storage
+      run: |
+        gsutil -m rsync -r . gs://triumph-website-bucket-1
