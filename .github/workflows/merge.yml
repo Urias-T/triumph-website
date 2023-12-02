@@ -1,9 +1,9 @@
 # This workflow ensure s that I (Triumph) am the only one who can merge a PR into the main branch
-name: actions_on_main_branch
+name: merge
 on:
   pull_request:
     types:
-      - synchronize
+      - merge
     branches:
       - 'main'
 
